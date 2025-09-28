@@ -28,7 +28,8 @@
             const SUPABASE_URL = "https://nwmjhnfkpuxkbdyfkynd.supabase.co";
             const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53bWpobmZrcHV4a2JkeWZreW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDQzNzUsImV4cCI6MjA3NDIyMDM3NX0.iazrnqHbDSAQ6GxHJ2P9yqOm1rYTeBKOJ8E6XsZpZ2c";
 
-            const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            // Teisingas klientas:
+            const supabase = supabasejs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
             const userList = document.getElementById("user-list");
             const form = document.getElementById("add-user-form");
