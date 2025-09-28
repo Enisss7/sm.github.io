@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="lt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Vartotojų sąrašas</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <div class="container">
         <h1>Vartotojų sąrašas</h1>
 
         <form id="add-user-form">
-            <input type="text" id="vardas" placeholder="Vardas" required>
-            <input type="text" id="pavarde" placeholder="Pavardė" required>
-            <input type="number" id="kubatura" placeholder="Kubatura" required>
+            <input type="text" id="vardas" placeholder="Vardas" required />
+            <input type="text" id="pavarde" placeholder="Pavardė" required />
+            <input type="number" id="kubatura" placeholder="Kubatura" required />
             <button type="submit">Pridėti vartotoją</button>
         </form>
 
@@ -28,14 +28,14 @@
             const SUPABASE_URL = "https://nwmjhnfkpuxkbdyfkynd.supabase.co";
             const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53bWpobmZrcHV4a2JkeWZreW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDQzNzUsImV4cCI6MjA3NDIyMDM3NX0.iazrnqHbDSAQ6GxHJ2P9yqOm1rYTeBKOJ8E6XsZpZ2c";
 
-            // Teisingas klientas Supabase v2
-            const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            // Create Supabase client correctly
+            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
             const userList = document.getElementById("user-list");
             const form = document.getElementById("add-user-form");
 
             async function getUsers() {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('users')
                     .select('*')
                     .order('id', { ascending: true });
@@ -64,7 +64,7 @@
                     return;
                 }
 
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('users')
                     .insert([{ vardas, pavarde, kubatura }]);
 
