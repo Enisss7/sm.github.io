@@ -46,11 +46,7 @@
                 }
 
                 userList.innerHTML = '';
-                data.forEach(user => {
-                    const li = document.createElement('li');
-                    li.textContent = `${user.id} – ${user.vardas} ${user.pavarde} | Kubatura: ${user.kubatura} | Sukurta: ${user.created_at}`;
-                    userList.appendChild(li);
-                });
+               
             }
 
             form.addEventListener('submit', async (e) => {
@@ -81,3 +77,4 @@
     </script>
 </body>
 </html>
+
