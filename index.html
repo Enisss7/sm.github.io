@@ -1,77 +1,75 @@
 <!DOCTYPE html>
 <html lang="lt">
 <head>
-    <meta charset="UTF-8">
-    <title>Supabase Online Vartotojai</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Supabase vartotojai</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Vartotojų sąrašas</h1>
-    <ul id="user-list"></ul>
+  <h1>Vartotojų sąrašas</h1>
+  <ul id="user-list"></ul>
 
-    <h2>Pridėti naują vartotoją</h2>
-    <form id="add-user-form">
-        <input type="text" id="name" placeholder="Vardas" required>
-        <input type="email" id="email" placeholder="El. paštas">
-        <button type="submit">Pridėti</button>
-    </form>
+  <h2>Pridėti naują vartotoją</h2>
+  <form id="add-user-form">
+    <input type="text" id="name" placeholder="Vardas" required>
+    <input type="email" id="email" placeholder="El. paštas">
+    <button type="submit">Pridėti</button>
+  </form>
 
-    <!-- Supabase JS v2 per CDN su module import -->
-    <script type="module">
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/module/index.js';
+  <!-- Supabase JS v1 iš CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.7/dist/umd/supabase.min.js"></script>
+  <script>
+    const SUPABASE_URL = "https://nwmjhnfkpuxkbdyfkynd.supabase.co";
+    const SUPABASE_ANON_KEY = "EY...<tavo_anon_raktas>...";
 
-        const SUPABASE_URL = "https://nwmjhnfkpuxkbdyfkynd.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53bWpobmZrcHV4a2JkeWZreW5kIiwiZGVmYXVsdCI6ImFub24iLCJpYXQiOjE3NTg2NDQzNzUsImV4cCI6MjA3NDIyMDM3NX0.iazrnqHbDSAQ6GxHJ2P9yqOm1rYTeBKOJ8E6XsZpZ2c";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const userList = document.getElementById("user-list");
+    const form = document.getElementById("add-user-form");
 
-        const userList = document.getElementById("user-list");
-        const form = document.getElementById("add-user-form");
+    async function getUsers() {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .order('id', { ascending: true });
 
-        async function getUsers() {
-            const { data, error } = await supabase
-                .from('users')
-                .select('*')
-                .order('id', { ascending: true });
+      if (error) {
+        console.error(error);
+        return;
+      }
 
-            if (error) {
-                console.error(error);
-                return;
-            }
+      userList.innerHTML = '';
+      data.forEach(user => {
+        const li = document.createElement('li');
+        li.textContent = `${user.id} – ${user.name}${user.email ? ' (' + user.email + ')' : ''}`;
+        userList.appendChild(li);
+      });
+    }
 
-            userList.innerHTML = '';
-            data.forEach(user => {
-                const li = document.createElement('li');
-                li.textContent = `${user.id} – ${user.name}${user.email ? ' (' + user.email + ')' : ''}`;
-                userList.appendChild(li);
-            });
-        }
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
+      if (!name) {
+        alert("Vardas negali būti tuščias!");
+        return;
+      }
 
-            if (!name) {
-                alert("Vardas negali būti tuščias!");
-                return;
-            }
+      const { error } = await supabase
+        .from('users')
+        .insert([{ name, email }]);
 
-            const { data, error } = await supabase
-                .from('users')
-                .insert([{ name, email }]);
-
-            if (error) {
-                console.error(error);
-            } else {
-                document.getElementById('name').value = '';
-                document.getElementById('email').value = '';
-                getUsers();
-            }
-        });
-
-        // Puslapio užkrovimo metu
+      if (error) {
+        console.error(error);
+      } else {
+        form.reset();
         getUsers();
-    </script>
+      }
+    });
+
+    // Puslapio užkrovimo metu
+    getUsers();
+  </script>
 </body>
 </html>
