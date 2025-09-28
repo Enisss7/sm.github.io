@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vartotojų sąrašas</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Supabase JS biblioteka -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.32.0/dist/supabase.min.js"></script>
 </head>
 <body>
     <h1>Vartotojų sąrašas</h1>
@@ -20,62 +18,68 @@
 
     <ul id="user-list"></ul>
 
+    <!-- Supabase JS biblioteka -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.32.0/dist/supabase.min.js"></script>
+
     <script>
-        // ⬇️ Pakeisk savo Supabase URL ir anon key čia
-        const SUPABASE_URL = "https://nwmjhnfkpuxkbdyfkynd.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53bWpobmZrcHV4a2JkeWZreW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDQzNzUsImV4cCI6MjA3NDIyMDM3NX0.iazrnqHbDSAQ6GxHJ2P9yqOm1rYTeBKOJ8E6XsZpZ2c";
+        // Palaukiame kol puslapis ir biblioteka įkeliami
+        window.addEventListener('DOMContentLoaded', () => {
+            // ⬇️ Pakeisk savo Supabase URL ir anon key čia
+            const SUPABASE_URL = "https://nwmjhnfkpuxkbdyfkynd.supabase.co";
+            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53bWpobmZrcHV4a2JkeWZreW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDQzNzUsImV4cCI6MjA3NDIyMDM3NX0.iazrnqHbDSAQ6GxHJ2P9yqOm1rYTeBKOJ8E6XsZpZ2c";
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const userList = document.getElementById("user-list");
-        const form = document.getElementById("add-user-form");
+            const userList = document.getElementById("user-list");
+            const form = document.getElementById("add-user-form");
 
-        // Gauti vartotojus
-        async function getUsers() {
-            const { data, error } = await supabase
-                .from('users')
-                .select('*')
-                .order('id', { ascending: true });
+            // Gauti vartotojus
+            async function getUsers() {
+                const { data, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .order('id', { ascending: true });
 
-            if (error) {
-                console.error(error);
-                return;
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+
+                userList.innerHTML = '';
+                data.forEach(user => {
+                    const li = document.createElement('li');
+                    li.textContent = `${user.id} – ${user.vardas} ${user.pavarde} | Kubatura: ${user.kubatura} | Sukurta: ${user.created_at}`;
+                    userList.appendChild(li);
+                });
             }
 
-            userList.innerHTML = '';
-            data.forEach(user => {
-                const li = document.createElement('li');
-                li.textContent = `${user.id} – ${user.vardas} ${user.pavarde} | Kubatura: ${user.kubatura} | Sukurta: ${user.created_at}`;
-                userList.appendChild(li);
+            // Formos submit
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const vardas = document.getElementById('vardas').value.trim();
+                const pavarde = document.getElementById('pavarde').value.trim();
+                const kubatura = document.getElementById('kubatura').value.trim();
+
+                if (!vardas || !pavarde || !kubatura) {
+                    alert("Visi laukeliai privalomi!");
+                    return;
+                }
+
+                const { data, error } = await supabase
+                    .from('users')
+                    .insert([{ vardas, pavarde, kubatura }]);
+
+                if (error) {
+                    console.error(error);
+                } else {
+                    form.reset();
+                    getUsers();
+                }
             });
-        }
 
-        // Formos submit
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const vardas = document.getElementById('vardas').value.trim();
-            const pavarde = document.getElementById('pavarde').value.trim();
-            const kubatura = document.getElementById('kubatura').value.trim();
-
-            if (!vardas || !pavarde || !kubatura) {
-                alert("Visi laukeliai privalomi!");
-                return;
-            }
-
-            const { data, error } = await supabase
-                .from('users')
-                .insert([{ vardas, pavarde, kubatura }]);
-
-            if (error) {
-                console.error(error);
-            } else {
-                form.reset();
-                getUsers();
-            }
+            // Užkrauname vartotojus puslapio atidarymo metu
+            getUsers();
         });
-
-        // Užkrauname vartotojus puslapio atidarymo metu
-        getUsers();
     </script>
 </body>
 </html>
