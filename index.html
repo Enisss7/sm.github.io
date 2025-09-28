@@ -46,7 +46,24 @@
                 }
 
                 userList.innerHTML = '';
-               
+               const messageDiv = document.getElementById('message');
+
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    // ... your existing code ...
+                
+                    if (error) {
+                        console.error(error);
+                        messageDiv.textContent = "Įvyko klaida!";
+                        messageDiv.style.color = "red";
+                    } else {
+                        messageDiv.textContent = "Dalyvis pridėtas";
+                        messageDiv.style.color = "green";
+                        form.reset();
+                        getUsers();
+                    }
+                });
+
             }
 
             form.addEventListener('submit', async (e) => {
@@ -77,4 +94,5 @@
     </script>
 </body>
 </html>
+
 
