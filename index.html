@@ -7,33 +7,32 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Vartotojų sąrašas</h1>
+    <div class="container">
+        <h1>Vartotojų sąrašas</h1>
 
-    <form id="add-user-form">
-        <input type="text" id="vardas" placeholder="Vardas" required>
-        <input type="text" id="pavarde" placeholder="Pavardė" required>
-        <input type="number" id="kubatura" placeholder="Kubatura" required>
-        <button type="submit">Pridėti vartotoją</button>
-    </form>
+        <form id="add-user-form">
+            <input type="text" id="vardas" placeholder="Vardas" required>
+            <input type="text" id="pavarde" placeholder="Pavardė" required>
+            <input type="number" id="kubatura" placeholder="Kubatura" required>
+            <button type="submit">Pridėti vartotoją</button>
+        </form>
 
-    <ul id="user-list"></ul>
+        <ul id="user-list"></ul>
+    </div>
 
-    <!-- Supabase JS biblioteka -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.32.0/dist/supabase.min.js"></script>
+    <!-- Supabase JS v1 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.7/dist/supabase.min.js"></script>
 
     <script>
-        // Palaukiame kol puslapis ir biblioteka įkeliami
         window.addEventListener('DOMContentLoaded', () => {
-            // ⬇️ Pakeisk savo Supabase URL ir anon key čia
             const SUPABASE_URL = "https://nwmjhnfkpuxkbdyfkynd.supabase.co";
             const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53bWpobmZrcHV4a2JkeWZreW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDQzNzUsImV4cCI6MjA3NDIyMDM3NX0.iazrnqHbDSAQ6GxHJ2P9yqOm1rYTeBKOJ8E6XsZpZ2c";
 
-            const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
             const userList = document.getElementById("user-list");
             const form = document.getElementById("add-user-form");
 
-            // Gauti vartotojus
             async function getUsers() {
                 const { data, error } = await supabase
                     .from('users')
@@ -53,7 +52,6 @@
                 });
             }
 
-            // Formos submit
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const vardas = document.getElementById('vardas').value.trim();
@@ -77,7 +75,6 @@
                 }
             });
 
-            // Užkrauname vartotojus puslapio atidarymo metu
             getUsers();
         });
     </script>
