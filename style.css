@@ -5,10 +5,20 @@ body {
     padding: 0;
 }
 
+.logopng {
+  height: auto;
+  width: 130px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 25px;
+  display: block; /* Ensures proper rendering */
+}
+
+
 /* Header bar with logo and hamburger */
 .header {
-    background-color: #f1f1f1;
-    padding: 20px;
+    background-color: #ffffff;
+    padding: 5px 15px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -22,7 +32,7 @@ body {
 
 /* Logo styling */
 .header a.logo {
-    font-size: 25px;
+    padding: 0px 0px;
     font-weight: bold;
     color: black;
     text-decoration: none;
